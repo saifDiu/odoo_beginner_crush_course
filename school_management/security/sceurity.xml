@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record model="ir.module.category" id="module_category_school_management">
+        <field name="name">School Management</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record model="res.groups.privilege" id="res_groups_privilege_school">
+        <field name="name">School</field>
+        <field name="sequence">10</field>
+        <field name="category_id" ref="school_management.module_category_school_management"/>
+    </record>
+
+    <record id="group_school_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="privilege_id" ref="res_groups_privilege_school"/>
+    </record>
+
+    <record id="group_school_admin" model="res.groups">
+        <field name="name">Administrator</field>
+        <field name="sequence">10</field>
+        <field name="implied_ids" eval="[(4, ref('group_school_user'))]"/>
+        <field name="privilege_id" ref="res_groups_privilege_school"/>
+    </record>
+
+
+</odoo>

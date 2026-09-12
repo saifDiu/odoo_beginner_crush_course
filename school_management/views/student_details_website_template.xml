@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="student_page_assets" name="Student Page Assets">
+        <style>
+            .o_student_page .card { border: none; border-radius: 14px; box-shadow: 0 2px 16px rgba(0,0,0,.08); }
+            .o_student_page .page-title { font-weight: 700; color: #1f2d3d; }
+            .o_student_page .page-subtitle { color: #7a8699; }
+            .o_student_page .table thead th {
+                background-color: #1f2d3d; color: #fff; font-weight: 600;
+                text-transform: uppercase; font-size: 11px; letter-spacing: .05em;
+                border: none; vertical-align: middle; padding: 14px 16px;
+            }
+            .o_student_page .table td { vertical-align: middle; padding: 12px 16px; border-color: #eef1f5; }
+            .o_student_page .table tbody tr:hover { background-color: #f6f8fb; }
+            .o_student_page .student-link { color: #1f2d3d; font-weight: 600; text-decoration: none; }
+            .o_student_page .student-link:hover { color: #3b82f6; text-decoration: underline; }
+            .o_student_page .avatar, .o_student_page .avatar-lg {
+                border-radius: 50%; object-fit: cover; border: 1px solid #e5e9f0; display: inline-block;
+            }
+            .o_student_page .avatar { width: 38px; height: 38px; }
+            .o_student_page .avatar-lg { width: 84px; height: 84px; }
+            .o_student_page .avatar-placeholder, .o_student_page .avatar-placeholder-lg {
+                border-radius: 50%; background-color: #1f2d3d; color: #fff; display: flex;
+                align-items: center; justify-content: center; font-weight: 700; text-transform: uppercase;
+            }
+            .o_student_page .avatar-placeholder { width: 38px; height: 38px; font-size: 15px; }
+            .o_student_page .avatar-placeholder-lg { width: 84px; height: 84px; font-size: 30px; }
+            .o_student_page .badge-status {
+                padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;
+                text-transform: uppercase; letter-spacing: .03em;
+            }
+            .o_student_page .badge-draft { background-color: #fdf3d8; color: #a3720c; }
+            .o_student_page .badge-confirmed { background-color: #d7f5e3; color: #17804a; }
+            .o_student_page .stat-badge {
+                background-color: #eef1f5; color: #1f2d3d; font-size: 13px; font-weight: 600;
+                padding: 8px 16px; border-radius: 20px;
+            }
+            .o_student_page .detail-label {
+                color: #8a94a6; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px;
+            }
+            .o_student_page .detail-value { color: #1f2d3d; font-size: 15px; font-weight: 600; }
+            .o_student_page .btn-back { color: #1f2d3d; font-weight: 600; text-decoration: none; }
+            .o_student_page .btn-back:hover { color: #3b82f6; }
+        </style>
+    </template>
+
+    <template id="portal_my_student_details" name="Student Page">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4 o_student_page">
+                <t t-call="school_management.student_page_assets"/>
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+                    <div>
+                        <h2 class="page-title mb-1">Students</h2>
+                        <p class="page-subtitle mb-0">Complete list of enrolled students</p>
+                    </div>
+                    <span class="stat-badge mt-2 mt-md-0">
+                        <t t-esc="len(students)"/> Total Students
+                    </span>
+                </div>
+
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Student</th>
+                                    <th>Roll No.</th>
+                                    <th>Class</th>
+                                    <th>Father Name</th>
+                                    <th>Phone</th>
+                                    <th>Gender</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-if="not students">
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted py-5">No students found.</td>
+                                    </tr>
+                                </t>
+                                <t t-foreach="students" t-as="student">
+                                    <tr>
+                                        <td><t t-esc="student_index + 1"/></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <t t-if="student.image">
+                                                    <img class="avatar mr-3"
+                                                         t-attf-src="/web/image/student.information/#{student.id}/image"
+                                                         alt="avatar"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="avatar-placeholder mr-3">
+                                                        <t t-esc="(student.name or '?')[0]"/>
+                                                    </span>
+                                                </t>
+                                                <a class="student-link ml-2" t-attf-href="/student/#{student.id}">
+                                                    <t t-esc="student.name"/>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td><t t-esc="student.roll_number"/></td>
+                                        <td><t t-esc="student.class_id.name or '-'"/></td>
+                                        <td><t t-esc="student.father_name"/></td>
+                                        <td><t t-esc="student.phone_number"/></td>
+                                        <td><t t-esc="student.gender and student.gender.capitalize() or '-'"/></td>
+                                        <td>
+                                            <span t-attf-class="badge-status badge-#{student.status}">
+                                                <t t-esc="student.status"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_student_details" name="Student Detail Page">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4 o_student_page">
+                <t t-call="school_management.student_page_assets"/>
+
+                <div class="mb-3">
+                    <a href="/student" class="btn-back">&#8592; Back to Students</a>
+                </div>
+
+                <div class="card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center flex-wrap mb-4">
+                            <t t-if="student.image">
+                                <img class="avatar-lg mr-4"
+                                     t-attf-src="/web/image/student.information/#{student.id}/image"
+                                     alt="avatar"/>
+                            </t>
+                            <t t-else="">
+                                <span class="avatar-placeholder-lg mr-4">
+                                    <t t-esc="(student.name or '?')[0]"/>
+                                </span>
+                            </t>
+                            <div class="ml-3">
+                                <h3 class="page-title mb-1"><t t-esc="student.name"/></h3>
+                                <span t-attf-class="badge-status badge-#{student.status}">
+                                    <t t-esc="student.status"/>
+                                </span>
+                            </div>
+                        </div>
+
+                        <hr/>
+
+                        <div class="row mt-3">
+                            <div class="col-md-4 mb-4">
+                                <div class="detail-label">Roll Number</div>
+                                <div class="detail-value"><t t-esc="student.roll_number"/></div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="detail-label">Class</div>
+                                <div class="detail-value"><t t-esc="student.class_id.name or '-'"/></div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="detail-label">Gender</div>
+                                <div class="detail-value"><t t-esc="student.gender and student.gender.capitalize() or '-'"/></div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="detail-label">Phone Number</div>
+                                <div class="detail-value"><t t-esc="student.phone_number"/></div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="detail-label">Email</div>
+                                <div class="detail-value"><t t-esc="student.email or '-'"/></div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="detail-label">Birth Certificate</div>
+                                <div class="detail-value"><t t-esc="student.birth_certificate or '-'"/></div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="detail-label">Father Name</div>
+                                <div class="detail-value"><t t-esc="student.father_name"/></div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="detail-label">Mother Name</div>
+                                <div class="detail-value"><t t-esc="student.mother_name or '-'"/></div>
+                            </div>
+                            <div class="col-md-8 mb-4">
+                                <div class="detail-label">Address</div>
+                                <div class="detail-value"><t t-esc="student.address or '-'"/></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

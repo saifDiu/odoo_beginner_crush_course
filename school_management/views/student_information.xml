@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="student_information_view_list" model="ir.ui.view">
+        <field name="name">student.information.view.list</field>
+        <field name="model">student.information</field>
+        <field name="arch" type="xml">
+            <list string="Student Information" decoration-muted="status == 'draft'"
+                  decoration-success="status == 'confirmed'">
+                <field name="name"/>
+                <field name="roll_number"/>
+                <field name="phone_number"/>
+                <field name="email"/>
+                <field name="birth_certificate"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="student_information_view_form" model="ir.ui.view">
+        <field name="name">student.information.view.form</field>
+        <field name="model">student.information</field>
+        <field name="arch" type="xml">
+            <form string="Student Information">
+                <header>
+                    <button type="object" invisible="status != 'draft'" string="Confirm Student" name="confirm_student"
+                            class="btn-primary"/>
+                    <button type="object" invisible="status != 'confirmed'" string="Reset to Draft" name="reset_student"
+                            class="btn-secondary"/>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <field name="image" widget="image" options="{'size': [130,200]}" class="float-end"/>
+                    <group>
+                        <group string="Basic Information">
+                            <field name="name" readonly="status != 'draft'"/>
+                            <field name="roll_number" readonly="status != 'draft'"/>
+                            <field name="phone_number" readonly="status != 'draft'"/>
+                            <field name="email" readonly="status != 'draft'"/>
+                            <field name="birth_certificate" readonly="status != 'draft'"/>
+                            <field name="gender"/>
+                            <field name="address"/>
+                            <field name="number_of_documents"/>
+                            <field name="class_id" options="{'no_create':True,'no_edit':True,'no_open':True}"/>
+                        </group>
+                        <group string="Parents Info">
+                            <field name="father_name" readonly="status != 'draft'"/>
+                            <field name="mother_name" readonly="status != 'draft'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Previous Record">
+                            <field name="previous_record_ids" readonly="status != 'draft'">
+                                <list editble="bottom">
+                                    <field name="student_id" column_visible="1"/>
+                                    <field name="other_school_id"/>
+                                    <field name="passing_year"/>
+                                    <field name="class_name"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="student_document" string="Attachments">
+                            <group string="Upload all kind of student documents here">
+                                <field name="student_documents_ids" widget="many2many_binary"/>
+                            </group>
+                        </page>
+                        <page name="student_notes" string="Notes">
+                            <group string="Write details note about this students">
+                                <field name="student_notes"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Student Kanban View -->
+    <record model="ir.ui.view" id="student_kanban_view">
+        <field name="name">student.kanban</field>
+        <field name="model">student.information</field>
+        <field name="arch" type="xml">
+            <kanban sample="1">
+                <field name="name"/>
+                <field name="roll_number"/>
+                <field name="email"/>
+                <field name="phone_number"/>
+                <field name="image"/>
+                <field name="number_of_documents"/>
+                <field name="class_id"/>
+                <templates>
+                    <t t-name="card" class="flex-row">
+                        <aside class="o_kanban_aside_full">
+                            <field name="image" class="w-100 h-auto m-0" widget="image"
+                                   options="{'img_class': 'object-fit-contain w-100 h-100'}"/>
+                        </aside>
+                        <main class="ps-2">
+                            <div class="mb-1">
+                                <field name="name" class="mb-0 fw-bold fs-5"/>
+                            </div>
+                            <div t-if="record.email.raw_value" class="text-truncate">
+                                <i class="fa fa-fw me-1 fa-envelope text-primary" title="Email"/>
+                                <field name="email"/>
+                            </div>
+                            <div t-if="record.phone_number.raw_value">
+                                <i class="fa fa-fw me-1 fa-phone text-primary" title="Phone"/>
+                                <field name="phone_number"/>
+                            </div>
+                            <div t-if="record.number_of_documents.raw_value">
+                                Documents:
+                                <field name="number_of_documents"/>
+                            </div>
+                            <div t-if="record.class_id.raw_value">
+                                Class:
+                                <field name="class_id"/>
+                            </div>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_student_search" model="ir.ui.view">
+        <field name="name">student.search</field>
+        <field name="model">student.information</field>
+        <field name="arch" type="xml">
+            <search string="Search Student">
+                <field name="name"
+                       filter_domain="[('display_name', 'ilike', self)]"/>
+                <field name="email"
+                       filter_domain="[('email', 'ilike', self)]"/>
+                <separator/>
+                <filter string="Male" name="gender_male" domain="[('gender', '=', 'male')]"/>
+                <filter string="Female" name="gender_female" domain="[('gender', '=', 'female')]"/>
+                <separator/>
+                <group name="group_by">
+                    <filter name="gender" string="Gender" domain="[]" context="{'group_by' : 'gender'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="student_information_action" model="ir.actions.act_window">
+        <field name="name">Student Information</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">student.information</field>
+        <field name="view_mode">kanban,form,list</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Please create your student information here.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="school_management_menu_root" name="School Management" sequence="1"/>
+    <menuitem id="student_information_menu" name="Student Information" parent="school_management_menu_root"
+              action="student_information_action" sequence="1"/>
+
+</odoo>

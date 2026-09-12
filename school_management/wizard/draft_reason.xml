@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="student_reset_draft_form" model="ir.ui.view">
+        <field name="name">student.reset.draft.form</field>
+        <field name="model">wizard.reset.draft</field>
+        <field name="arch" type="xml">
+            <form string="Reset Reason">
+                <group>
+                    <field name="student_id" readonly="1"/>
+                    <field name="reason"/>
+                </group>
+                <footer>
+                    <button name="button_draft" string="Mark as Draft" type="object" class="btn-primary"
+                            data-hotkey="q"/>
+                    <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="student_draft_action" model="ir.actions.act_window">
+        <field name="name">Reset Reason</field>
+        <field name="res_model">wizard.reset.draft</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="student_reset_draft_form"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="school_management.model_wizard_reset_draft"/>
+    </record>
+
+</odoo>

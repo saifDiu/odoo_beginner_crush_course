@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+     <record id="class_information_view_list" model="ir.ui.view">
+        <field name="name">class.information.view.list</field>
+        <field name="model">class.information</field>
+        <field name="arch" type="xml">
+            <list editable="top" string="Class Information">
+                <field name="name"/>
+                <field name="class_teacher_id"/>
+                <field name="number_of_seat"/>
+            </list>
+        </field>
+    </record>
+
+     <record id="class_information_action" model="ir.actions.act_window">
+        <field name="name">Class Information</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">class.information</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Please create your class information here.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="class_information_menu" groups="school_management.group_school_admin" name="Class Information" parent="school_management.school_management_menu_root"
+              action="class_information_action" sequence="2"/>
+
+</odoo>
